@@ -8,21 +8,22 @@
 import UIKit
 import SnapKit
 
-protocol MainModuleViewProtocol: AnyObject {
+protocol MainViewProtocol: AnyObject {
     func seccess()
     func imageLoadingSecces(for indexParh: IndexPath)
     func failure()
 }
 
-class MainModuleViewController: UIViewController {
+class MainViewController: UIViewController {
     
-    var presenter: MainModulePresenterProtocol!
+    var presenter: MainPresenterProtocol!
         
     private var reuseCellIdentifier = "standartCell"
     
     private lazy var mainTableView: UITableView = {
         let table = UITableView()
         table.dataSource = self
+        table.delegate = self
         return table
     }()
     
@@ -86,7 +87,7 @@ class MainModuleViewController: UIViewController {
 
 // MARK: - TableView DataSource
 
-extension MainModuleViewController: UITableViewDataSource {
+extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         presenter.getSearchResults().count
     }
@@ -120,9 +121,18 @@ extension MainModuleViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - TableView Delegate
+
+extension MainViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let view = ModuleBuilder.createDetailModule(result: presenter.getSearchResults()[indexPath.row])
+        self.navigationController?.pushViewController(view, animated: true)
+    }
+}
+
 // MARK: - SearchBar Delegate
 
-extension MainModuleViewController: UISearchBarDelegate {
+extension MainViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         print("searchBarSearchButtonClicked")
@@ -149,7 +159,7 @@ extension MainModuleViewController: UISearchBarDelegate {
 
 // MARK: - MainModuleViewProtocol
 
-extension MainModuleViewController: MainModuleViewProtocol {
+extension MainViewController: MainViewProtocol {
     func seccess() {
         // после успешного завершения запроса обновляем таблицу
         self.mainTableView.reloadData()

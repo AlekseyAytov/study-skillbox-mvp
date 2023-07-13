@@ -99,7 +99,7 @@ struct ResultForDisplay {
     init(networkModel: WelcomeElement) {
         self.title = networkModel.show.name
         self.description = networkModel.show.summary
-        self.image = networkModel.show.image?.medium
+        self.image = networkModel.show.image?.original
         self.genres = networkModel.show.genres
         self.start = networkModel.show.premiered
     }

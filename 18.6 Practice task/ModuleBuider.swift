@@ -9,22 +9,23 @@ import UIKit
 
 protocol ModuleBuilderProtocol {
     static func createMainModule() -> UIViewController
-//    static func createDetailModule(_ data: ResultForDisplay) -> UIViewController
+    static func createDetailModule(result: ResultForDisplay) -> UIViewController
 }
 
 class ModuleBuilder: ModuleBuilderProtocol {
     static func createMainModule() -> UIViewController {
-        let view = MainModuleViewController()
+        let view = MainViewController()
         let networkService = NetworkService()
-        let mainPresenter = MainModulePresenter(view: view, networkService: networkService)
-        view.presenter = mainPresenter
+        let presenter = MainPresenter(view: view, networkService: networkService)
+        view.presenter = presenter
         return view
     }
     
-//    static func createDetailModule(_ data: ResultForDisplay) -> UIViewController {
-//        let viewController = DetailViewController()
-//        let detailVCPresenter = DetailViewPresenter(about: data)
-//        viewController.presenter = detailVCPresenter
-//        return viewController
-//    }
+    static func createDetailModule(result: ResultForDisplay) -> UIViewController {
+        let view = DetailViewController()
+        let networkService = NetworkService()
+        let presenter = DetailPresenter(view: view, networkService: networkService, result: result)
+        view.presenter = presenter
+        return view
+    }
 }
