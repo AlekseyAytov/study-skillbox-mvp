@@ -17,36 +17,36 @@ protocol MainPresenterProtocol {
 final class MainPresenter: MainPresenterProtocol {
     weak var view: MainViewProtocol?
     let networkService: NetworkServiceProtocol
-    
-    required init(view: MainViewProtocol, networkService: NetworkServiceProtocol){
+
+    required init(view: MainViewProtocol, networkService: NetworkServiceProtocol) {
         self.view = view
         self.networkService = networkService
     }
-    
+
     // результаты поиска
     private var searchResults: [ResultForDisplay] = []
-    
+
     // словарь для хранения изображений с измененными размерами
     private var imagesCache: [IndexPath: UIImage] = [:]
-    
+
     func getSearchResults() -> [ResultForDisplay] {
         return searchResults
     }
-    
+
     func doSearchResult(searchExpression string: String?) {
-        
+
         // Обнуляем результаты предыдущего запроса
         searchResults = []
         imagesCache = [:]
-        
+
         networkService.getSearchResults(searchExpression: string) { [weak self] result in
             guard let self = self else { return }
-            
+
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
                     // преобразование networkModel в массив структур ResultForDisplay
-                    self.searchResults = Array(data.map{ResultForDisplay(networkModel: $0)})
+                    self.searchResults = Array(data.map { ResultForDisplay(networkModel: $0) })
                     self.view?.seccess()
                 case .failure(let error):
                     print(error.localizedDescription)
@@ -55,7 +55,7 @@ final class MainPresenter: MainPresenterProtocol {
             }
         }
     }
-    
+
     func getImage(for indexPath: IndexPath) -> UIImage? {
         if let image = imagesCache[indexPath] {
             return image
@@ -66,12 +66,14 @@ final class MainPresenter: MainPresenterProtocol {
                 DispatchQueue.main.async {
                     if let imageData = imageData {
                         // если загрузка изображения произошла, то заносим в словарь
-                        self.imagesCache[indexPath] = UIImage(data: imageData)!.scalePreservingAspectRatio(targetSize: CGSize(width: 100, height: 100))
+                        let image = UIImage(data: imageData)
+                        self.imagesCache[indexPath] = image!.scalePreservingAspectRatio(
+                            targetSize: CGSize(width: 100, height: 100))
                     } else {
                         // если загрузка изображения НЕ произошла, то заносим в словарь No-Image-Placeholder
                         self.imagesCache[indexPath] = UIImage(named: "No-Image-Placeholder")
                     }
-                    
+
                     print("ended service.loadImageAsync - \(indexPath)")
                     self.view?.imageLoadingSecces(for: indexPath)
                 }

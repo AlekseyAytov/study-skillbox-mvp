@@ -20,7 +20,7 @@ class ModuleBuilder: ModuleBuilderProtocol {
         view.presenter = presenter
         return view
     }
-    
+
     static func createDetailModule(result: ResultForDisplay) -> UIViewController {
         let view = DetailViewController()
         let networkService = NetworkService()

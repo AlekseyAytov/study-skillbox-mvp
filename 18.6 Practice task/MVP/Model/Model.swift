@@ -37,7 +37,10 @@ struct Show: Codable {
     let links: Links
 
     enum CodingKeys: String, CodingKey {
-        case id, url, name, type, language, genres, status, runtime, averageRuntime, premiered, ended, officialSite, schedule, rating, weight, network, webChannel, dvdCountry, externals, image, summary, updated
+        case id, url, name, type, language, genres
+        case status, runtime, averageRuntime, premiered
+        case ended, officialSite, schedule, rating, weight
+        case network, webChannel, dvdCountry, externals, image, summary, updated
         case links = "_links"
     }
 }
@@ -95,7 +98,7 @@ struct ResultForDisplay {
     var image: String?
     var genres: [String]
     var start: String?
-    
+
     init(networkModel: WelcomeElement) {
         self.title = networkModel.show.name
         self.description = networkModel.show.summary

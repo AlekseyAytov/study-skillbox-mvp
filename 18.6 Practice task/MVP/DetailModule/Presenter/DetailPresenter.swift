@@ -17,19 +17,19 @@ final class DetailPresenter: DetailPresenterProtocol {
     weak var view: DetailViewProtocol!
     private var result: ResultForDisplay
     var networkService: NetworkServiceProtocol
-    
-    private var image: UIImage? = nil
-    
+
+    private var image: UIImage?
+
     init(view: DetailViewProtocol, networkService: NetworkServiceProtocol, result: ResultForDisplay) {
         self.view = view
         self.result = result
         self.networkService = networkService
     }
-    
+
     func getResult() -> ResultForDisplay {
         return result
     }
-    
+
     // метод возвращает картинку либо асинхронно её загружает и сохраняет в переменную,
     // при повторном использованиии метода возвращает загруженную картинку
     func getImage() -> UIImage? {
@@ -41,7 +41,7 @@ final class DetailPresenter: DetailPresenterProtocol {
                 return self.image
             }
             print(urlString)
-            
+
             networkService.loadImageAsync(urlString: urlString) { imageData in
                 DispatchQueue.main.async {
                     if let imageData = imageData {
